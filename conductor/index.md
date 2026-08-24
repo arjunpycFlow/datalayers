@@ -24,8 +24,6 @@ same precedence rule as `AGENTS.md` §0.
 
 ## Active Tracks
 
-None currently active.
-
 <!-- Auto-populated by /conductor:new-track -->
 
 ## Completed
@@ -38,7 +36,9 @@ None currently active.
   Layer — gold_builder CLI (6/6 phases, archived)
 - [documentation_20260824](./tracks/_archive/documentation_20260824/index.md) —
   Documentation — README restructure (5/5 phases, archived)
+- [docs-restructure_20260824](./tracks/docs-restructure_20260824/index.md) —
+  Documentation — bullets-first README + docs/ deep-dives (6/6 phases, complete)
 
 ## Getting Started
 
-Run `/conductor:new-track` for the next piece of work.
+Run `/conductor:implement docs-restructure_20260824` to start implementation.
