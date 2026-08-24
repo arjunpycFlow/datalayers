@@ -1,0 +1,20 @@
+mart: gold_variant_gene_lookup_v1
+schema: gold_open
+grain: one row per (sample_id, chrom, pos, ref, alt)
+purpose: >
+  "Which samples carry a variant in gene X, and what tissue/diagnosis are they
+  from?" — the join-shaped research question (candidate_bundle/README.md, Query).
+columns:
+  mandatory: [sample_id, gene_symbol, chrom, pos, ref, alt, tissue]
+  good_to_have: [consequence, impact, diagnosis, filter]
+  okay_to_have: [vaf, hgvsp, exon, qc_status, disease_group]
+  not_relevant:
+    - collection_date
+    - tumor_purity
+    - notes
+    - sequencing_platform
+    - library_prep
+    - patient_id   # deliberately dropped, not generalised — this mart never
+                    # needs patient identity, so minimize rather than merely mask
+filters:
+  - "filter IS NULL OR filter = 'PASS'"

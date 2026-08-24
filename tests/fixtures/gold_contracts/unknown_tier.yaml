@@ -1,0 +1,8 @@
+mart: bad_contract_v2
+schema: gold_open
+grain: one row per sample
+purpose: test fixture — an unknown tier name
+columns:
+  mandatory: [sample_id]
+  sorta_relevant: [tissue]
+filters: []

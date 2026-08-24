@@ -1,0 +1,18 @@
+{
+  "id": "gold-layers_20260823",
+  "title": "Gold Layer — gold_builder CLI",
+  "type": "feature",
+  "status": "complete",
+  "created": "2026-08-23T23:46:30",
+  "updated": "2026-08-24T00:00:41",
+  "phases": {
+    "total": 6,
+    "completed": 6
+  },
+  "tasks": {
+    "total": 19,
+    "completed": 19
+  },
+  "commits": [],
+  "commit_policy": "manual — user reviews summaries and says 'add and commit' explicitly"
+}

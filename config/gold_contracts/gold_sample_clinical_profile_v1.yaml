@@ -1,0 +1,13 @@
+mart: gold_sample_clinical_profile_v1
+schema: gold_restricted
+grain: one row per sample
+purpose: >
+  Full-fidelity clinical context for correlation work that genuinely needs exact
+  dates/purity — restricted tier, narrow and audited access
+  (working_contexts/ v2 §5.3, §6.1, §6.3).
+columns:
+  mandatory: [sample_id, patient_id, tissue, diagnosis, collection_date, tumor_purity]
+  good_to_have: [sex_reported, sex_inferred, sex_concordant, qc_status, sequencing_platform]
+  okay_to_have: [library_prep, notes, is_ffpe, is_repeat_library]
+  not_relevant: []   # sample-grain mart — no variant-level columns exist to exclude here
+filters: []

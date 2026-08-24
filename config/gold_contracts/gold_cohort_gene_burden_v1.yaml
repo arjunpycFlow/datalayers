@@ -1,0 +1,25 @@
+mart: gold_cohort_gene_burden_v1
+schema: gold_open
+grain: one row per gene_symbol
+purpose: >
+  "How many variants per gene, and how many distinct patients carry each?" —
+  the aggregate-shaped research question (candidate_bundle/README.md, Query).
+columns:
+  mandatory:
+    - gene_symbol
+    - n_variants
+    - n_distinct_samples
+    - n_distinct_patients
+    - n_samples_with_unknown_patient   # COUNT(DISTINCT patient_id) silently drops
+                                        # NULL patients (e.g. S-0011) — this column
+                                        # makes that gap visible instead of hidden
+  good_to_have: [n_hotspot_variants]
+  okay_to_have: [mean_vaf]
+  not_relevant:
+    - sample_id
+    - patient_id
+    - tissue
+    - collection_date
+    - tumor_purity
+    # pure aggregate — nothing patient-identifying should be queryable from this mart
+filters: []
