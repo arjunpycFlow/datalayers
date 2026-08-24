@@ -1,0 +1,14 @@
+version: 1
+canonical_terms: [M, F]
+mappings:
+  "m": M
+  "M": M
+  "male": M
+  "Male": M
+  "f": F
+  "F": F
+  "female": F
+  "Female": F
+on_unmapped: quarantine
+# Note: sex_reported is empty for S-0014 — absent, not "unmapped". Only a
+# present-but-unrecognized value quarantines; empty/missing stays NULL.

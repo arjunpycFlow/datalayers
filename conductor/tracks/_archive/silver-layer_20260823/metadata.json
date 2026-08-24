@@ -1,0 +1,18 @@
+{
+  "id": "silver-layer_20260823",
+  "title": "Silver Layer — silver_builder CLI",
+  "type": "feature",
+  "status": "complete",
+  "created": "2026-08-23T22:53:02",
+  "updated": "2026-08-23T23:16:38",
+  "phases": {
+    "total": 6,
+    "completed": 6
+  },
+  "tasks": {
+    "total": 20,
+    "completed": 20
+  },
+  "commits": [],
+  "commit_policy": "manual — user reviews summaries and says 'add and commit' explicitly"
+}
