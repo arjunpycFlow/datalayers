@@ -111,8 +111,25 @@ guarantee per layer.
 
 ### Bronze layer — `data_loader`
 
-- Ingests one batch at a time from `candidate_bundle/data/` into
-  `warehouse/bronze/`: `uv run data-loader batch_2026_01`.
+`data-loader` ingests **one batch at a time** from the landing zone, joins its
+VCF + manifest, and writes the result into `warehouse/bronze/` — this is the
+only one of the three CLIs that takes a required argument (which batch).
+
+```bash
+uv run data-loader batch_2026_01
+# -> batch_2026_01: 795 rows written, 2 quarantined, 0 exact duplicates collapsed
+```
+
+**Options:**
+- `batch_id` (positional, **required**) — e.g. `batch_2026_01`; must be a
+  non-empty subdirectory of `--data-root`.
+- `--data-root` (default `candidate_bundle/data`) — landing-zone root to read
+  `<batch_id>/` from.
+- `--out-root` (default `warehouse`) — warehouse root; `bronze/data/` and
+  `bronze/quarantine/` are created under it.
+
+More example invocations, non-default roots: [docs/data_architecture/bronze.md#command-and-options](docs/data_architecture/bronze.md#command-and-options).
+
 - Writes two Parquet files per run, **never overwritten**: `bronze/data/<batch_id>/`
   (every combinable record, `NULL` where a side is legitimately missing) and
   `bronze/quarantine/<batch_id>/` (only records that couldn't be parsed or safely
@@ -125,13 +142,54 @@ guarantee per layer.
   calls — fixed to land with manifest columns `NULL` instead. Full story in the
   [AI assistance note](#ai-assistance-note) below.
 
+**Inspecting output** — bronze writes Parquet, not a database; the
+[DuckDB CLI](https://duckdb.org/docs/installation/) reads Parquet directly, no
+loading step. Prerequisite: `brew install duckdb` (macOS/Homebrew; see the link
+above for other platforms) — the project's Python `duckdb` dependency doesn't
+install the standalone CLI binary.
+
+```bash
+# landed rows for a batch (latest run — glob picks up every timestamped file)
+duckdb -c "SELECT * FROM 'warehouse/bronze/data/batch_2026_01/*.parquet' LIMIT 5"
+
+# quarantined rows + why — reason_code/reason_detail carry the actual cause
+duckdb -c "SELECT reason_code, reason_detail, raw_text
+           FROM 'warehouse/bronze/quarantine/batch_2026_01/*.parquet'"
+```
+
 → [Full bronze architecture, internal-flow diagram, exit codes](docs/data_architecture/bronze.md)
 
 ### Silver layer — `silver_builder`
 
-- Reads bronze's `data` output, normalizes types + vocabulary, and writes a
-  grain-correct trust-layer schema (patients/samples/variant_calls/batches) to
-  `warehouse/silver.duckdb`: `uv run silver-builder`.
+`silver-builder` reads **every** batch's bronze output in one run (no batch
+argument — unlike `data-loader`), normalizes it, and rebuilds the whole
+trust-layer schema in `warehouse/silver.duckdb`.
+
+```bash
+uv run silver-builder
+# -> silver_builder: read 1090 rows from 2 bronze file(s) -> 20 samples,
+#    1089 variant calls, 0 quarantined -> warehouse/silver.duckdb
+```
+
+**Options** (all optional — bare `silver-builder` auto-discovers everything):
+- `--data-files FILE [FILE ...]` — explicit `data_*.parquet` paths;
+  **overrides auto-discovery entirely**. Use to rebuild from one specific
+  bronze run while troubleshooting, e.g.
+  `--data-files warehouse/bronze/data/batch_2026_01/data_<timestamp>.parquet`.
+- `--bronze-data-root` (default `warehouse/bronze/data`) — root to
+  auto-discover bronze data files under (ignored if `--data-files` is given).
+- `--bronze-quarantine-root` (default `warehouse/bronze/quarantine`) — root to
+  auto-discover bronze quarantine files under, for audit counts only; doesn't
+  affect what gets built.
+- `--out-root` (default `warehouse`) — warehouse root; `silver.duckdb` is
+  written here.
+
+More example invocations: [docs/data_architecture/silver.md#command-and-options](docs/data_architecture/silver.md#command-and-options).
+
+- **Running it bare, repeatedly, is safe** — auto-discovery reads only the
+  *latest* file per batch (not every `data-loader` run ever made), and every
+  table is a full `CREATE OR REPLACE`, never an append. No conflicts, no
+  duplicate rows. [Full reasoning](docs/data_architecture/silver.md#command-and-options).
 - Normalizes `tumor_purity` and all VCF allele-frequency-like fields to `[0,1]`;
   maps categorical fields to controlled vocabularies via
   `config/crosswalks/*.yaml` — an unmapped value quarantines, never guessed at.
@@ -148,10 +206,37 @@ guarantee per layer.
 
 ### Gold layer — `gold_builder`
 
+`gold-builder` reads `warehouse/silver.duckdb` and rebuilds **every** mart
+contract found in `config/gold_contracts/` in one run (no batch or file
+argument at all — it always reads all of silver's current state).
+
+```bash
+uv run gold-builder
+# -> gold-builder: -> warehouse/gold.duckdb
+#      gold_cohort_gene_burden_v1: 36 rows, 0 quarantined
+#      gold_sample_clinical_profile_v1: 17 rows, 3 quarantined
+#      gold_variant_gene_lookup_v1: 1032 rows, 57 quarantined
+```
+
+**Options** (all optional):
+- `--mart NAME [NAME ...]` (default: build all) — restrict the run to just
+  these mart(s), e.g. `--mart gold_variant_gene_lookup_v1`. Faster when
+  iterating on a single contract.
+- `--silver-db` (default `warehouse/silver.duckdb`) — path to silver's DuckDB
+  file to read from.
+- `--out-root` (default `warehouse`) — warehouse root; `gold.duckdb` is
+  written here.
+
+More example invocations: [docs/data_architecture/gold.md#command-and-options](docs/data_architecture/gold.md#command-and-options).
+
 - Reads `warehouse/silver.duckdb` and writes **purpose-scoped marts** to
   `warehouse/gold.duckdb` — one mart per research question, each with its own
   4-tier column contract (`mandatory`/`good_to_have`/`okay_to_have`/`not_relevant`)
-  rather than one generic schema: `uv run gold-builder`.
+  rather than one generic schema.
+- **Running it bare, repeatedly, is also safe** — gold reads a single
+  already-fully-rebuilt silver database, not a set of files to reconcile, and
+  every mart is `CREATE OR REPLACE`. No auto-discovery ambiguity to reason
+  about at all.
 - Three marts: `gold_variant_gene_lookup_v1` and `gold_cohort_gene_burden_v1`
   (`gold_open`), `gold_sample_clinical_profile_v1` (`gold_restricted`, exact
   dates/purity for correlation work).
@@ -178,16 +263,11 @@ uv run pytest
 number (`TP53` → 57/19/17/1, `S-0011`'s 57 variant rows, etc.) was checked against
 the actual pipeline output, not asserted from the design docs alone.
 
-### CLI reference
-
-| | `data-loader` | `silver-builder` | `gold-builder` |
-|---|---|---|---|
-| Reads | `candidate_bundle/data/<batch_id>/` | `warehouse/bronze/data/` | `warehouse/silver.duckdb` |
-| Writes | `warehouse/bronze/{data,quarantine}/` | `warehouse/silver.duckdb` | `warehouse/gold.duckdb` |
-| Exit `0` | success | success | success |
-| Exit `1` | batch folder missing/empty | no bronze data files found | `--silver-db` not found |
-| Exit `2` | reconciliation invariant failed | reconciliation invariant failed | reconciliation or schema-minimization invariant failed |
-| Idempotency | new timestamped file per run, **never overwrites** | full rebuild (`CREATE OR REPLACE`) every run | full rebuild (`CREATE OR REPLACE`) every run |
+Full command/option reference for each CLI now lives with its layer, above —
+[bronze](docs/data_architecture/bronze.md#command-and-options),
+[silver](docs/data_architecture/silver.md#command-and-options),
+[gold](docs/data_architecture/gold.md#command-and-options) — each with its
+reads/writes/exit-code table and example runs with real output.
 
 ## Governance posture
 
