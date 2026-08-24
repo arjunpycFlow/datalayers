@@ -1,0 +1,6 @@
+sample_id,patient_id,batch_id,collection_date,tissue,diagnosis,disease_group,tumor_purity,sex_reported,sex_inferred,sequencing_platform,qc_status,notes,library_prep
+S-0016,P-0016,batch_2026_02,2026/02/10,Lung,Lung adenocarcinoma,Thoracic,0.61,f,F,NovaSeq 6000,PASS,re-extracted,TruSeq DNA PCR-Free
+S-0017,P-0017,batch_2026_02,2026/02/12, Breast,Invasive ductal carcinoma,Breast,0.87,F,F,novaseq 6000,pass,,KAPA HyperPrep
+S-0018,P-0018,batch_2026_02,Feb 14 2026,COLON ,Colorectal adenocarcinoma,Gastrointestinal,0.50,Female,F,NovaSeq 6000,pass,,TruSeq DNA PCR-Free
+S-0019,P-0019,batch_2026_02,Feb 16 2026, Stomach,Gastric adenocarcinoma,Gastrointestinal,0.58,Male,M,NovaSeq6000,pass,,TruSeq DNA PCR-Free
+S-0020,P-0020,batch_2026_02,Feb 18 2026, Pancreas,Pancreatic ductal adenocarcinoma,Gastrointestinal,55%,Male,M,NovaSeq 6000,PASS,,truseq dna pcr-free

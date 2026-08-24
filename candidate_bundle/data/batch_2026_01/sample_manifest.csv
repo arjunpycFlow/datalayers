@@ -1,0 +1,17 @@
+sample_id,patient_id,batch_id,collection_date,tissue,diagnosis,disease_group,tumor_purity,sex_reported,sex_inferred,sequencing_platform,qc_status,notes
+S-0001,P-0001,batch_2026_01,Jan 5 2026, Lung,Lung adenocarcinoma,Thoracic,0.32,f,F,NovaSeq X,PASS,
+S-0002,P-0002,batch_2026_01,2026-01-07,breast,Invasive ductal carcinoma,Breast,0.772,m,M,novaseq 6000,pass,
+S-0003,P-0003,batch_2026_01,2026/01/09,Colon,Colorectal adenocarcinoma,Gastrointestinal,,m,M,NovaSeq 6000,PASS,
+S-0004,P-0003,batch_2026_01,2026-01-11, Colon,Colorectal adenocarcinoma,Gastrointestinal,0.389,male,M,novaseq 6000,PASS,
+S-0005,P-0005,batch_2026_01,2026/01/13,pancreas,Pancreatic ductal adenocarcinoma,Gastrointestinal,63%,male,M,NovaSeq X,PASS,repeat library
+S-0006,P-0006,batch_2026_01,2026-01-15,LUNG ,Lung adenocarcinoma,Thoracic,0.39,female,F,NovaSeq6000,PASS,
+S-0007,P-0007,batch_2026_01,17/01/2026,breast,Invasive ductal carcinoma,Breast,0.307,Female,M,NovaSeq 6000,pass,FFPE block
+S-0008,P-0008,batch_2026_01,2026-01-19, Colon,Colorectal adenocarcinoma,Gastrointestinal,0.705,Male,M,NovaSeq X,PASS,
+S-0009,P-0009,batch_2026_01,2026/01/21,Stomach,Gastric adenocarcinoma,Gastrointestinal,0.70,male,M,novaseq 6000,PASS,
+S-0010,P-0010,batch_2026_01,23/01/2026,Pancreas,Pancreatic ductal adenocarcinoma,Gastrointestinal,56%,f,F,NovaSeq 6000,pass,
+S-0011,P-0011,batch_2026_01,Jan 25 2026,lung,Lung adenocarcinoma,Thoracic,57%,f,F,NovaSeq 6000,PASS,
+S-0011,P-0011,batch_2026_01,Jan 25 2026,lung,Lung adenocarcinoma,Thoracic,0.64,f,F,NovaSeq 6000,PASS,
+S-0012,P-0012,batch_2026_01,,breast,Invasive ductal carcinoma,Breast,0.484,f,F,novaseq 6000,,
+S-0013,P-0013,batch_2026_01,04/01/2026,COLON ,Colorectal adenocarcinoma,Gastrointestinal,53%,Male,M,novaseq 6000,PASS,FFPE block
+S-0014,P-0014,batch_2026_01,2026-01-06,STOMACH ,Gastric adenocarcinoma,Gastrointestinal,0.66,,F,NovaSeq 6000,,
+S-0015,P-0015,batch_2026_01,2026-01-08,Pancreas,Pancreatic ductal adenocarcinoma,Gastrointestinal,36%,m,M,novaseq 6000,PASS,

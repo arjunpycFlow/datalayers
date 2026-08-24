@@ -1,0 +1,81 @@
+##fileformat=VCFv4.2
+##fileDate=20260118
+##source=SyntheticPipeline_v1.4
+##reference=GRCh38
+##contig=<ID=chr1,length=248956422>
+##contig=<ID=chr2,length=242193529>
+##contig=<ID=chr3,length=198295559>
+##contig=<ID=chr4,length=190214555>
+##contig=<ID=chr5,length=181538259>
+##contig=<ID=chr6,length=170805979>
+##contig=<ID=chr7,length=159345973>
+##contig=<ID=chr9,length=138394717>
+##contig=<ID=chr10,length=133797422>
+##contig=<ID=chr11,length=135086622>
+##contig=<ID=chr12,length=133275309>
+##contig=<ID=chr13,length=114364328>
+##contig=<ID=chr14,length=107043718>
+##contig=<ID=chr16,length=90338345>
+##contig=<ID=chr17,length=83257441>
+##contig=<ID=chr18,length=80373285>
+##contig=<ID=chr19,length=58617616>
+##contig=<ID=chr21,length=46709983>
+##FILTER=<ID=PASS,Description="All filters passed">
+##FILTER=<ID=weak_evidence,Description="Insufficient read evidence for a somatic call">
+##FILTER=<ID=low_depth,Description="Depth below the somatic calling threshold">
+##FILTER=<ID=germline_risk,Description="Likely germline rather than somatic">
+##INFO=<ID=CALLER,Number=1,Type=String,Description="Variant caller(s) supporting this call">
+##INFO=<ID=MAX_POP_AF,Number=1,Type=Float,Description="Highest population allele frequency across reference panels">
+##INFO=<ID=HOTSPOT,Number=0,Type=Flag,Description="Site listed in a curated cancer hotspot set">
+##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations. Format: SYMBOL|Consequence|IMPACT|HGVSc|HGVSp|EXON">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Read depth for the ref and alt alleles">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Total read depth at this site">
+##FORMAT=<ID=VAF,Number=1,Type=Float,Description="Variant allele fraction in the tumour sample">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	S-0012
+chr1	26728464	.	C	G	103	PASS	CALLER=mutect2_strelka2;MAX_POP_AF=0.0;CSQ=ARID1A|missense_variant|MODERATE|c.1802C>G|p.Cys601Asn|5/20	GT:AD:DP:VAF	0/1:49,15:64:0.2344
+chr2	47656639	.	G	A	652	PASS	CALLER=mutect2;MAX_POP_AF=0.0;CSQ=MSH2|missense_variant|MODERATE|c.1006G>A|p.Val336Cys|14/16	GT:AD:DP:VAF	0/1:31,47:78:0.6026
+chr3	179150926	.	TACC	T	.	PASS	CALLER=strelka2;MAX_POP_AF=0.0;CSQ=PIK3CA|frameshift_variant|HIGH|c.2680_2683del|p.Cys894fs|15/21	GT:AD:DP:VAF	0/1:100,66:166:0.3976
+chr3	179157508	.	A	T	533	PASS	CALLER=mutect2_strelka2;MAX_POP_AF=0.0;CSQ=PIK3CA|missense_variant|MODERATE|c.1491A>T|p.Tyr498Ala|16/21	GT:AD:DP:VAF	0/1:112,48:160:0.3000
+chr3	179161854	.	CG	C	.	PASS	CALLER=mutect2_strelka2;MAX_POP_AF=0.0;CSQ=PIK3CA|frameshift_variant|HIGH|c.1987_1988del|p.Met663fs|10/21	GT:AD:DP:VAF	0/1:74,2:76:0.0263
+chr4	152531592	.	A	G	515	PASS	CALLER=mutect2;MAX_POP_AF=0.0;CSQ=FBXW7|synonymous_variant|LOW|c.1207A>G|p.Ala403=|10/12	GT:AD:DP:VAF	1/1:130,26:156:0.1667
+chr4	152532295	.	C	A	520	PASS	CALLER=strelka2;MAX_POP_AF=0.0;CSQ=FBXW7|missense_variant|MODERATE|c.2509C>A|p.Gln837Ser|3/12	GT:AD:DP:VAF	0/1:65,13:78:0.1667
+chr5	112816805	.	A	T	207	PASS	CALLER=mutect2;MAX_POP_AF=0.0;CSQ=APC|synonymous_variant|LOW|c.678A>T|p.Glu227=|11/16	GT:AD:DP:VAF	0/1:53,11:64:0.1719
+chr5	112835126	.	T	G	423	PASS	CALLER=mutect2;MAX_POP_AF=0.0;CSQ=APC|missense_variant|MODERATE|c.728T>G|p.Ile243Gly|16/16	GT:AD:DP:VAF	0/1:67,34:101:0.3366
+chr5	112844928	.	G	A	709	PASS	CALLER=strelka2;MAX_POP_AF=0.0008783;CSQ=APC|intron_variant|MODIFIER|c.2227-193G>A||	GT:AD:DP:VAF	0/1:82,75:157:0.4777
+chr6	151974538	.	T	G	523	PASS	CALLER=strelka2;MAX_POP_AF=9.34e-05;HOTSPOT;CSQ=ESR1|missense_variant|MODERATE|c.2940T>G|p.Lys981Gly|4/10	GT:AD:DP:VAF	0/1:45,3:48:0.0625
+chr7	55064260	.	ACAT	A	831	weak_evidence	CALLER=strelka2;MAX_POP_AF=0.0;CSQ=EGFR|frameshift_variant|HIGH|c.2724_2727del|p.Cys909fs|8/28	GT:AD:DP:VAF	0/1:48,40:88:0.4545
+chr7	55149707	rs14916948	TA	T	865	PASS	CALLER=mutect2;MAX_POP_AF=0.0002714;CSQ=EGFR|frameshift_variant|HIGH|c.2090_2091del|p.Glu697fs|27/28	GT:AD:DP:VAF	0/1:21,10:31:0.3226
+chr7	55150064	.	TCAT	T	458	PASS	CALLER=strelka2;MAX_POP_AF=0.0;CSQ=EGFR|frameshift_variant|HIGH|c.1290_1293del|p.Gly431fs|13/28	GT:AD:DP:VAF	0/1:43,20:63:0.3175
+chr7	116714186	.	G	C	547	low_depth	CALLER=strelka2;MAX_POP_AF=0.0004267;CSQ=MET|5_prime_UTR_variant|MODIFIER|c.-219G>C||	GT:AD:DP:VAF	0/1:78,52:130:0.4000
+chr7	140903826	.	C	T	.	PASS	CALLER=mutect2;MAX_POP_AF=0.0;CSQ=BRAF|missense_variant|MODERATE|c.754C>T|p.Gln252Trp|9/18	GT:AD:DP:VAF	0/1:70,14:84:0.1667
+chr9	21975495	.	C	A	.	PASS	CALLER=strelka2;MAX_POP_AF=0.0;CSQ=CDKN2A|stop_gained|HIGH|c.795C>A|p.Gly266Ter|3/4	GT:AD:DP:VAF	0/1:132,37:169:0.2189
+chr9	21983893	.	C	A	658	PASS	CALLER=mutect2_strelka2;MAX_POP_AF=0.0;CSQ=CDKN2A|synonymous_variant|LOW|c.917C>A|p.Thr306=|1/4	GT:AD:DP:VAF	0/1:103,43:146:0.2945
+chr9	136513033	.	TTCA	T	855	PASS	CALLER=strelka2;MAX_POP_AF=0.0;CSQ=NOTCH1|frameshift_variant|HIGH|c.1623_1626del|p.Lys542fs|8/34	GT:AD:DP:VAF	0/1:95,44:139:0.3165
+chr9	136515091	.	TTCT	T	.	PASS	CALLER=mutect2_strelka2;MAX_POP_AF=0.0;CSQ=NOTCH1|inframe_deletion|MODERATE|c.667_670del|p.His223Arg|18/34	GT:AD:DP:VAF	0/1:37,25:62:0.4032
+chr9	136538301	.	C	A	557	PASS	CALLER=mutect2;MAX_POP_AF=0.0;CSQ=NOTCH1|synonymous_variant|LOW|c.2873C>A|p.Phe958=|16/34	GT:AD:DP:VAF	0/1:75,25:100:0.2500
+chr10	87871914	.	C	T	.	PASS	CALLER=mutect2;MAX_POP_AF=0.0;CSQ=PTEN|missense_variant|MODERATE|c.2366C>T|p.Val789Lys|6/9	GT:AD:DP:VAF	0/1:64,42:106:0.3962
+chr10	87965381	.	A	G	.	PASS	CALLER=strelka2;MAX_POP_AF=0.0;CSQ=PTEN|intron_variant|MODIFIER|c.2663-192A>G||	GT:AD:DP:VAF	0/1:84,39:123:0.3171
+chr11	108323603	.	C	A	211	PASS	CALLER=strelka2;MAX_POP_AF=0.0;CSQ=ATM|stop_gained|HIGH|c.2316C>A|p.Cys773Ter|60/63	GT:AD:DP:VAF	0/1:31,27:58:0.4655
+chr11	108348945	.	CATA	C	398	PASS	CALLER=mutect2_strelka2;MAX_POP_AF=0.0;CSQ=ATM|frameshift_variant|HIGH|c.1260_1263del|p.Pro421fs|33/63	GT:AD:DP:VAF	0/1:95,13:108:0.1204
+chr11	108350351	.	CATG	C	.	PASS	CALLER=mutect2;MAX_POP_AF=0.0;CSQ=ATM|frameshift_variant|HIGH|c.1010_1013del|p.Pro337fs|52/63	GT:AD:DP:VAF	0/1:35,24:59:0.4068
+chr12	25206008	.	G	C	160	PASS	CALLER=strelka2;MAX_POP_AF=0.0;CSQ=KRAS|missense_variant|MODERATE|c.2626G>C|p.Tyr876Ile|2/6	GT:AD:DP:VAF	0/1:23,21:44:0.4773
+chr12	49034103	.	G	A	535	PASS	CALLER=mutect2_strelka2;MAX_POP_AF=0.0007437;CSQ=KMT2D|stop_gained|HIGH|c.2672G>A|p.Ser891Ter|22/54	GT:AD:DP:VAF	0/1:35,35:70:0.5000
+chr12	49038132	.	T	C	629	PASS	CALLER=mutect2;MAX_POP_AF=0.0;CSQ=KMT2D|splice_region_variant|LOW|c.1526+2T>C||25/54	GT:AD:DP:VAF	0/1:77,59:136:0.4338
+chr13	32361336	rs47096297	G	T	204	PASS	CALLER=mutect2;MAX_POP_AF=0.0004278;CSQ=BRCA2|missense_variant|MODERATE|c.1824G>T|p.Ile609Cys|20/27	GT:AD:DP:VAF	0/1:93,59:152:0.3882
+chr13	48405326	.	A	T	900	PASS	CALLER=mutect2_strelka2;MAX_POP_AF=0.0;CSQ=RB1|missense_variant|MODERATE|c.1692A>T|p.Tyr565Arg|16/27	GT:AD:DP:VAF	0/1:82,64:146:0.4384
+chr13	48442588	rs1044265	TTTT	T	83	PASS	CALLER=mutect2;MAX_POP_AF=0.0003473;CSQ=RB1|frameshift_variant|HIGH|c.359_362del|p.Asp120fs|12/27	GT:AD:DP:VAF	0/1:33,14:47:0.2979
+chr13	48449717	rs41802634	C	A	746	PASS	CALLER=mutect2_strelka2;MAX_POP_AF=0.0002044;CSQ=RB1|stop_gained|HIGH|c.2901C>A|p.Phe968Ter|23/27	GT:AD:DP:VAF	0/1:97,67:164:0.4085
+chr14	104792860	.	G	GGTT	758	PASS	CALLER=mutect2;MAX_POP_AF=0.0;CSQ=AKT1|inframe_insertion|MODERATE|c.555_556insGTT|p.Ile186Trp|12/14	GT:AD:DP:VAF	0/1:20,28:48:0.5833
+chr17	7686258	.	CC	C	463	PASS	CALLER=strelka2;MAX_POP_AF=0.0;CSQ=TP53|frameshift_variant|HIGH|c.163_164del|p.Asp55fs|3/11	GT:AD:DP:VAF	0/1:58,53:111:0.4775
+chr17	7686479	.	ATCA	A	894	PASS	CALLER=mutect2_strelka2;MAX_POP_AF=0.0;HOTSPOT;CSQ=TP53|frameshift_variant|HIGH|c.759_762del|p.Phe254fs|11/11	GT:AD:DP:VAF	0/1:31,29:60:0.4833
+chr17	7686633	.	CC	C	399	germline_risk	CALLER=strelka2;MAX_POP_AF=0.0;CSQ=TP53|inframe_deletion|MODERATE|c.2171_2172del|p.Gly724Thr|11/11	GT:AD:DP:VAF	0/1:103,67:170:0.3941
+chr17	39688845	rs68110835	CA	C	408	PASS	CALLER=strelka2;MAX_POP_AF=0.0004767;CSQ=ERBB2|inframe_deletion|MODERATE|c.852_853del|p.Tyr285Phe|24/27	GT:AD:DP:VAF	1/1:67,11:78:0.1410
+chr17	39706285	.	T	A	523	PASS	CALLER=mutect2_strelka2;MAX_POP_AF=0.0005699;CSQ=ERBB2|missense_variant|MODERATE|c.2879T>A|p.Gln960Tyr|2/27	GT:AD:DP:VAF	0/1:57,13:70:0.1857
+chr17	39714093	.	TG	T	845	PASS	CALLER=mutect2;MAX_POP_AF=0.0;HOTSPOT;CSQ=ERBB2|frameshift_variant|HIGH|c.709_710del|p.Gln237fs|25/27	GT:AD:DP:VAF	0/1:31,9:40:0.2250
+chr17	43085427	.	C	A	294	PASS	CALLER=mutect2;MAX_POP_AF=0.0;CSQ=BRCA1|synonymous_variant|LOW|c.1611C>A|p.Gly538=|5/23	GT:AD:DP:VAF	0/1:73,19:92:0.2065
+chr17	43086937	.	G	C	515	PASS	CALLER=mutect2_strelka2;MAX_POP_AF=0.0;CSQ=BRCA1|synonymous_variant|LOW|c.2781G>C|p.Val928=|15/23	GT:AD:DP:VAF	0/1:99,79:178:0.4438
+chr17	43135022	.	T	C	364	PASS	CALLER=mutect2_strelka2;MAX_POP_AF=0.0008269;CSQ=BRCA1|intron_variant|MODIFIER|c.75+262T>C||	GT:AD:DP:VAF	0/1:109,46:155:0.2968
+chr19	1209537	.	G	A	690	PASS	CALLER=strelka2;MAX_POP_AF=0.0;CSQ=STK11|missense_variant|MODERATE|c.1291G>A|p.Ala431Ile|8/10	GT:AD:DP:VAF	0/1:80,22:102:0.2157
+chr19	10486898	.	A	C	310	germline_risk	CALLER=mutect2;MAX_POP_AF=0.0;CSQ=KEAP1|missense_variant|MODERATE|c.2998A>C|p.Thr1000Glu|1/6	GT:AD:DP:VAF	0/1:102,48:150:0.3200
+chr21	35011251	.	CCCC	C	351	PASS	CALLER=mutect2;MAX_POP_AF=0.0;HOTSPOT;CSQ=RUNX1|frameshift_variant|HIGH|c.2221_2224del|p.Asn741fs|5/9	GT:AD:DP:VAF	0/1:100,5:105:0.0476
