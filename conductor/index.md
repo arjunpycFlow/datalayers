@@ -32,7 +32,9 @@ None currently active.
 
 - [bronze-layer_20260823](./tracks/_archive/bronze-layer_20260823/index.md) — Bronze
   Layer — data_loader CLI (6/6 phases, archived)
+- [silver-layer_20260823](./tracks/_archive/silver-layer_20260823/index.md) — Silver
+  Layer — silver_builder CLI (6/6 phases, archived)
 
 ## Getting Started
 
-Run `/conductor:new-track` for the next track (silver layer).
+Run `/conductor:new-track` for the next track (gold layer).

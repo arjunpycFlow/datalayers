@@ -52,10 +52,50 @@ safely combined at all (malformed lines, conflicting duplicate manifest rows) �
 is ever silently dropped.
 
 > **Status:** bronze layer complete
-> (`conductor/tracks/bronze-layer_20260823/`, all 6 phases). Verified against both real
-> batches: `batch_2026_01` → 795 rows written, 2 quarantined (`S-0011`'s conflicting
-> manifest duplicate); `batch_2026_02` → 295 rows written, 1 quarantined (`S-0020`'s
-> truncated line). Silver and gold are not built yet.
+> (`conductor/tracks/_archive/bronze-layer_20260823/`, all 6 phases). Verified
+> against both real batches: `batch_2026_01` → 795 rows written, 2 quarantined
+> (`S-0011`'s conflicting manifest duplicate); `batch_2026_02` → 295 rows written, 1
+> quarantined (`S-0020`'s truncated line). Gold is not built yet.
+
+## Running the silver-layer builder
+
+`silver_builder` reads bronze's `data` Parquet output, normalizes types and
+vocabulary, and writes a trust-layer schema (patients/samples/variant_calls/batches,
+plus a normalization-failure quarantine) to `warehouse/silver.duckdb`:
+
+```bash
+uv run silver-builder
+```
+
+By default it auto-discovers each batch's latest `data_*.parquet` under
+`warehouse/bronze/data/`. To rebuild from a specific bronze run instead:
+
+```bash
+uv run silver-builder --data-files warehouse/bronze/data/batch_2026_01/data_<timestamp>.parquet [...]
+```
+
+**Exit codes:** `0` success · `1` no bronze data files found · `2` reconciliation
+invariant failed (a sample went unaccounted for — a bug, not a data defect).
+
+**What it does that bronze didn't:**
+- Normalizes `tumor_purity` and all VCF-native allele-frequency-like fields
+  (`VAF`, `MAX_POP_AF`, `GNOMAD_AF_POPMAX`, `CCF`) to `[0,1]` fractions.
+- Maps `tissue`/`sequencing_platform`/`library_prep`/`qc_status` to controlled
+  vocabularies via `config/crosswalks/*.yaml` — an unmapped value quarantines,
+  never guessed at.
+- Splits bronze's flat, denormalized rows into grain-correct tables:
+  `patients` (one row per patient), `samples` (one row per sample, with a
+  `has_variant_data` flag), `variant_calls` (one row per sample × variant).
+- Full rebuild every run (`CREATE OR REPLACE TABLE`) — deterministic, no
+  incremental-state bugs.
+
+> **Status:** silver layer complete
+> (`conductor/tracks/silver-layer_20260823/`, all 6 phases). Verified against real
+> bronze output for both batches: 1090 rows in → 20 samples, 1089 variant calls, 0
+> silver-level quarantines (the known real-data defects were already handled at
+> bronze). Example queries confirmed against real data: `TP53` has 57 variants but
+> only 17 distinct patients — the exact denominator trap `n_distinct_patients` exists
+> to prevent. Gold is not built yet.
 
 ## AI assistance note
 
@@ -74,3 +114,14 @@ gap. `spec.md`, `plan.md`, and the tests were all corrected to match. Phase 6's
 reconciliation formula was similarly revised — the originally-planned single combined
 equation didn't actually balance once the join's merge behavior was worked through, so
 it became two independent conservation checks instead.
+
+**Silver layer — a real data-quality finding, not in the original scope:**
+`batch_2026_02`'s `VAF` field turned out to be on a 0–100 scale, `batch_2026_01`'s on
+0–1 — confirmed by cross-checking against `AD`/`DP` (`32/57=0.5614` vs. the file's
+`VAF=56.14`, exactly ×100), not assumed. Added `normalize_af()`, applied to
+`VAF`/`MAX_POP_AF`/`GNOMAD_AF_POPMAX`/`CCF`. **Also self-corrected an error along the
+way:** an initial pass also flagged `MAX_POP_AF` outliers, which turned out to be a
+bug in my own `grep` regex (it truncated scientific notation like `9.6e-06` to `9.6`)
+rather than a real data problem — caught and fixed before it shipped in any doc or
+test, not left as a false claim. Both are recorded in detail in
+`conductor/tracks/silver-layer_20260823/plan.md` (Phase 4).

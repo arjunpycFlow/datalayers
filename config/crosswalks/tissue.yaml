@@ -1,0 +1,15 @@
+version: 1
+canonical_terms: [Lung, Breast, Colon, Stomach, Pancreas]
+mappings:
+  "lung": Lung
+  "LUNG": Lung
+  "Lung": Lung
+  "breast": Breast
+  "Breast": Breast
+  "COLON": Colon
+  "Colon": Colon
+  "STOMACH": Stomach
+  "Stomach": Stomach
+  "pancreas": Pancreas
+  "Pancreas": Pancreas
+on_unmapped: quarantine

@@ -1,0 +1,7 @@
+version: 1
+canonical_terms: ["TruSeq DNA PCR-Free", "KAPA HyperPrep"]
+mappings:
+  "TruSeq DNA PCR-Free": "TruSeq DNA PCR-Free"
+  "truseq dna pcr-free": "TruSeq DNA PCR-Free"
+  "KAPA HyperPrep": "KAPA HyperPrep"
+on_unmapped: quarantine

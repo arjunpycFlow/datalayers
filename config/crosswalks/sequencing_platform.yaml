@@ -1,0 +1,8 @@
+version: 1
+canonical_terms: ["NovaSeq X", "NovaSeq 6000"]
+mappings:
+  "NovaSeq X": "NovaSeq X"
+  "novaseq 6000": "NovaSeq 6000"
+  "NovaSeq 6000": "NovaSeq 6000"
+  "NovaSeq6000": "NovaSeq 6000"
+on_unmapped: quarantine

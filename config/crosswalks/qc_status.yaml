@@ -1,0 +1,9 @@
+version: 1
+canonical_terms: [PASS]
+mappings:
+  "PASS": PASS
+  "pass": PASS
+on_unmapped: quarantine
+# Note: empty/missing qc_status is NOT "unmapped" — it's absent, and stays NULL
+# (a sample with no verdict has not passed). Only a present-but-unrecognized
+# value quarantines.
