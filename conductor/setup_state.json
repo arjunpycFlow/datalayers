@@ -1,0 +1,38 @@
+{
+  "status": "complete",
+  "project_type": "brownfield",
+  "current_section": "styleguides",
+  "current_question": 1,
+  "completed_sections": ["product", "guidelines", "tech_stack", "workflow", "styleguides"],
+  "answers": {
+    "tech_stack.languages": "Python 3.14 (pyproject.toml requires-python >=3.14, .python-version pins 3.14)",
+    "tech_stack.frontend": "None — CLI only",
+    "tech_stack.backend": "None — CLI only (data_loader), stdlib argparse",
+    "tech_stack.database": "DuckDB + Parquet-on-disk (warehouse/bronze, warehouse/silver.duckdb, warehouse/gold.duckdb)",
+    "tech_stack.infrastructure": "Local only, no cloud accounts, no managed services — reviewer clones and runs, nothing to provision",
+    "workflow.tdd_strictness": "Flexible — add tests where they make sense (parsing logic, edge cases like S-0011/S-0020), not mandated for every line.",
+    "workflow.verification_checkpoints": "After each phase completion — run all tests written so far, commit, then move on.",
+    "workflow.commit_strategy": "Conventional Commits (feat:, fix:, etc.)",
+    "workflow.code_review": "Self-review via the verification step (CLAUDE.md §1) — solo project, no second reviewer.",
+    "styleguides.languages": "Python only",
+    "styleguides.existing_conventions": "None found (no ruff/black/flake8/mypy config) — generate fresh guide.",
+    "product.project_name": "inocras_datalayers",
+    "product.description": "A CLI pipeline that ingests somatic VCF + sample manifest batches into a governed, queryable curated zone (bronze/silver/gold) for researchers and an eventual NL assistant.",
+    "product.problem_statement": "Somatic VCF + manifest batches arrive messy and change shape over time (schema drift, malformed files, referential gaps); researchers need to query them reliably, and a future NL assistant needs a foundation trustworthy enough to answer questions without a human sanity-checking its SQL.",
+    "product.target_users": "SQL-writing researchers today, and a natural-language assistant later that queries the same curated data.",
+    "product.key_goals": "Reliably queryable curated zone; reproducible re-runs; never silently drop or impute a record; additive schema evolution across batches.",
+    "guidelines.voice_tone": "Concise and direct, reasoning-forward — every claim backed by a command or a stated tradeoff, no filler.",
+    "guidelines.design_principles": "Never silently drop or impute; comprehensibility beats cleverness; schema evolution is additive only; every decision carries a written rationale."
+  },
+  "files_created": [
+    "conductor/index.md",
+    "conductor/product.md",
+    "conductor/product-guidelines.md",
+    "conductor/tech-stack.md",
+    "conductor/workflow.md",
+    "conductor/tracks.md",
+    "conductor/code_styleguides/python.md"
+  ],
+  "started_at": "2026-08-23T21:30:16",
+  "last_updated": "2026-08-23T21:36:35"
+}

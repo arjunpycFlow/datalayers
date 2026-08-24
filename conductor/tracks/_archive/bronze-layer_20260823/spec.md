@@ -1,0 +1,95 @@
+# Specification: Bronze Layer — `data_loader` CLI
+
+**Track ID:** bronze-layer_20260823
+**Type:** Feature
+**Created:** 2026-08-23
+**Status:** Draft
+
+## Summary
+
+A CLI (`data_loader`) that ingests one batch of genomic pipeline output
+(`candidate_bundle/data/batch_<batch_id>/` — a `sample_manifest.csv` plus one somatic
+VCF per sample) into a bronze-layer curated pair of Parquet files: a **data** file
+holding every combinable record, and a **quarantine** file holding every record that
+genuinely can't be combined or parsed. Nothing is ever dropped.
+
+## Context
+
+From `conductor/product.md`: this is the first slice of a genomic data foundation that
+must serve two consumers with opposing needs — SQL researchers today (want full raw
+detail) and a natural-language assistant later (wants a small, unambiguous, fully
+documented surface). Bronze is the fidelity layer underneath both. The full landing-zone
+data contract (verified VCF header declarations, manifest columns, known defects) and
+the complete design rationale live in `../../../../scratch_pad.md` — this spec summarizes
+it for tracking; treat `scratch_pad.md` as the fuller reference if anything here needs
+more detail during implementation.
+
+## User Story
+
+As a researcher (or downstream pipeline layer), I want every VCF and manifest record
+from a batch landed in a governed bronze layer — joined, deduplicated, and with nothing
+silently dropped — so that silver/gold and eventually an NL assistant can trust bronze
+as a complete, auditable record of what arrived.
+
+## Acceptance Criteria
+
+- [ ] `S-0008` (orphan manifest row, no VCF on disk) appears in `bronze.data` as a
+      variant-`NULL` row — represented, not dropped, not quarantined.
+- [ ] Both `S-0011` manifest rows (conflicting `tumor_purity`, `57%` vs `0.64`) land in
+      `bronze.quarantine` with `reason_code='CONFLICTING_DUPLICATE'`. **Revised**
+      (design gap found during Phase 5 implementation, resolved 2026-08-23): `S-0011`'s
+      VCF variant calls are separately valid and still land in `bronze.data`, with
+      manifest dimension columns `NULL` — same rule as `S-0008`'s gap, applied
+      symmetrically. Excluding otherwise-good variant calls because an unrelated
+      manifest field conflicts would itself be a silent drop of real data.
+- [ ] `S-0020`'s truncated final line lands in `bronze.quarantine`
+      (`reason_code='MALFORMED_VCF_LINE'`); its 63 valid rows land in `bronze.data`
+      (verified count — earlier `working_contexts/` docs estimated "~100").
+- [ ] `CSQ` parses via each file's own declared header order — 6 sub-fields for batch 1,
+      7 for batch 2 (`MANE_SELECT` appended) — never a hardcoded field list.
+- [ ] A bare-key INFO Flag (e.g. `HOTSPOT`) parses to `'true'`, not a crash.
+- [ ] Running the same batch twice produces two distinct timestamped output files (both
+      `data/` and `quarantine/`); the first run's files are byte-unchanged afterward.
+- [ ] The reconciliation invariant (every input record accounted for in data,
+      quarantine, or a logged dedup count) holds for both `batch_2026_01` and
+      `batch_2026_02`.
+
+## Dependencies
+
+None — this is the first track; nothing upstream to depend on. `warehouse/` output
+root does not exist yet and is created by this track.
+
+## Out of Scope
+
+- Vocabulary normalisation (`"LUNG "` → `"LUNG"` trim only, never lowercased or mapped
+  to a controlled vocabulary).
+- Type casting beyond `.`/`""` → `NULL` (`tumor_purity` stays the raw string; no
+  `%`→fraction conversion, no date parsing).
+- Purpose-scoped filtering or completeness contracts (a later, gold-layer concern).
+- Silver and gold layers entirely — this track builds bronze only.
+
+## Technical Notes
+
+Full detail (header declarations, schemas, storage layout, module layout, CLI
+contract) is in `../../../../scratch_pad.md`. Key resolved decisions carried into the
+plan:
+
+1. **Bronze does the join** — one row per (sample, variant), on `sample_id`. A
+   deliberate departure from strict medallion layering (join usually deferred to a
+   later layer).
+2. **Dedup what's mergeable, quarantine what isn't** — exact-match duplicates collapse
+   silently (logged); conflicting duplicates are an unresolvable combination and go to
+   quarantine rather than guessing a winner.
+3. **Quarantine is narrow** — only structurally unparsable lines/rows and conflicting
+   duplicates. A legitimately missing value is `NULL` in the data file, not quarantined.
+4. **Idempotency = never corrupts a prior run**, not byte-identical reruns — every run
+   writes a new timestamped file under `warehouse/bronze/{data,quarantine}/<batch_id>/`;
+   nothing is overwritten or deleted.
+5. Two output datasets only: `bronze.data`, `bronze.quarantine` — see `scratch_pad.md`
+   for full column lists.
+6. Stack: Python 3.14, `duckdb` (only new dependency), stdlib `csv`/`argparse` for
+   parsing — per `conductor/tech-stack.md`.
+
+---
+
+_Generated by Conductor from `scratch_pad.md`. Review and edit as needed._
