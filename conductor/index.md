@@ -24,7 +24,7 @@ same precedence rule as `AGENTS.md` §0.
 
 ## Active Tracks
 
-None currently active — all three medallion layers (bronze, silver, gold) complete.
+None currently active.
 
 <!-- Auto-populated by /conductor:new-track -->
 
@@ -36,6 +36,8 @@ None currently active — all three medallion layers (bronze, silver, gold) comp
   Layer — silver_builder CLI (6/6 phases, archived)
 - [gold-layers_20260823](./tracks/_archive/gold-layers_20260823/index.md) — Gold
   Layer — gold_builder CLI (6/6 phases, archived)
+- [documentation_20260824](./tracks/_archive/documentation_20260824/index.md) —
+  Documentation — README restructure (5/5 phases, archived)
 
 ## Getting Started
 
