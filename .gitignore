@@ -11,3 +11,9 @@ wheels/
 
 # OS
 .DS_Store
+
+# Scratch working notes — not part of the deliverable
+scratch_pad.md
+
+# Generated pipeline output
+warehouse/

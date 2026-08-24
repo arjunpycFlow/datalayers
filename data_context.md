@@ -48,6 +48,57 @@ Each needs its own validation and cleaning pass before being joined — the
 manifest's messiness doesn't imply anything about a given VCF's cleanliness
 and vice versa.
 
+## Landing convention for `candidate_bundle/data/` (source, immutable)
+
+This is the **general shape a new batch is expected to arrive in**, not a snapshot of
+today's two folders — a pipeline built against the literal current tree will break the
+day `batch_2026_03` lands. The pattern, inferred and confirmed against the two batches
+present today:
+
+```
+candidate_bundle/data/
+└── batch_<batch_id>/              one flat folder per landing event, e.g. batch_2026_01,
+    │                               batch_2026_02, batch_2026_03, ... — no nesting deeper
+    │                               than batch folder → files
+    ├── sample_manifest.csv        exactly one per batch — the batch's clinical/technical
+    │                               dimension table, one row expected per sample
+    └── S-000N.somatic.vcf         one VCF per sample in that batch — the batch's
+                                    molecular/fact data, filename carries sample_id
+```
+
+Every batch folder is expected to carry **both** artifact types together — a VCF set and
+its manifest — because, per the relationship above, neither is independently useful:
+ingest logic should be written against "a batch = manifest + VCFs, joined by
+`sample_id`," not against a fixed file count or a fixed pair of batch names. Two
+consequences that follow directly from that:
+
+- **File count per batch is not fixed.** batch_2026_01 shipped 14 VCFs + 16 manifest
+  rows (15 distinct sample_id), batch_2026_02 shipped 5 + 5. A new batch may ship any
+  number of samples; ingest must discover files by listing the folder, never by assuming
+  a count or a contiguous `S-000N` sequence.
+- **1:1 between VCF files and manifest rows is the expectation, not a guarantee.**
+  Because the two artifacts are independent sources that only agree to describe the same
+  cohort *if the pipeline that produced them did its job*, every batch must be validated
+  both directions on ingest (every VCF has a manifest row, every manifest row has a VCF)
+  — never assumed from the fact that a manifest row exists or a file is present.
+
+**Evidence this validation is load-bearing, not theoretical** — found by listing
+`batch_2026_01` and diffing it against its manifest, not inferred from file names:
+
+- **Orphaned manifest row:** `S-0008` / `P-0008` has a manifest row but no
+  `S-0008.somatic.vcf` file on disk. A join keyed on `sample_id` alone will silently
+  produce a sample with clinical metadata and zero variant rows unless this is checked
+  for explicitly.
+- **Duplicate `sample_id`:** `S-0011` appears as two manifest rows with the same
+  `patient_id`/`collection_date` but different `tumor_purity` (57% vs 0.64 — likely the
+  same value in two formats, but they disagree once parsed as floats: 0.57 vs 0.64).
+  A join on `sample_id` will fan out the single `S-0011.somatic.vcf`'s variant rows
+  against two manifest rows unless deduplicated first.
+
+`batch_2026_02` has neither problem: VCF count and manifest row count both equal 5, 1:1.
+That batch-to-batch difference is itself the point — do not generalize batch_2026_02's
+cleanliness into an assumption future batches will hold to.
+
 ## Batches are not identical in shape
 
 `batch_2026_02` adds new INFO fields (VCF) and at least one new manifest
