@@ -1,0 +1,20 @@
+{
+  "id": "docs-restructure_20260824",
+  "title": "Documentation — bullets-first README + docs/ deep-dives",
+  "type": "chore",
+  "status": "complete",
+  "created": "2026-08-24T10:36:39",
+  "updated": "2026-08-24T11:40:00",
+  "current_phase": 6,
+  "current_task": "done",
+  "phases": {
+    "total": 6,
+    "completed": 6
+  },
+  "tasks": {
+    "total": 16,
+    "completed": 16
+  },
+  "commits": [],
+  "commit_policy": "manual — user reviews summaries and says 'add and commit' explicitly"
+}
