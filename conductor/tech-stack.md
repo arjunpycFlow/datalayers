@@ -11,8 +11,8 @@ None — CLI only.
 
 ## Backend
 
-None — CLIs (`data_loader`, `silver_builder`), stdlib `argparse` for both interfaces.
-No web framework.
+None — CLIs (`data_loader`, `silver_builder`, `gold_builder`), stdlib `argparse` for
+all three interfaces. No web framework.
 
 ## Database / storage
 
@@ -24,11 +24,12 @@ Resolved decision (D1 in `../working_contexts/`) — no SQLite, no server-based 
 
 ## Key dependencies
 
-- `duckdb` — bronze/silver's storage and query engine. VCF and CSV parsing use the
-  stdlib (`csv`, plain text) deliberately — no dependency the author hasn't used, per
-  the pairing-session working agreement.
+- `duckdb` — bronze/silver/gold's storage and query engine. VCF and CSV parsing use
+  the stdlib (`csv`, plain text) deliberately — no dependency the author hasn't
+  used, per the pairing-session working agreement.
 - `pyyaml` — added during the silver-layer track to load `config/crosswalks/*.yaml`
-  vocabulary mapping files.
+  vocabulary mapping files; reused as-is (no new dependency) by gold's
+  `config/gold_contracts/*.yaml` mart contracts.
 - `pytest` (dev only, `[dependency-groups].dev`) — added during the bronze-layer track
   for the phase-by-phase TDD tests. Not a runtime dependency.
 

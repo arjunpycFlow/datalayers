@@ -1,0 +1,10 @@
+mart: bad_contract_v1
+schema: gold_open
+grain: one row per sample
+purpose: test fixture — a column listed in two tiers
+columns:
+  mandatory: [sample_id]
+  good_to_have: [sample_id]
+  okay_to_have: []
+  not_relevant: []
+filters: []
