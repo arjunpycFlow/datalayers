@@ -2,17 +2,42 @@
 
 Reads `warehouse/silver.duckdb` and writes **purpose-scoped marts** to
 `warehouse/gold.duckdb` — one mart per research question, each with its own
-column-relevancy contract rather than one generic schema:
+column-relevancy contract rather than one generic schema.
+
+## Command and options
 
 ```bash
-uv run gold-builder
+uv run gold-builder [--silver-db PATH] [--out-root PATH] [--mart NAME [NAME ...]]
 ```
 
-Builds every contract found in `config/gold_contracts/`. To build just one:
+| Option | Default | Meaning |
+|---|---|---|
+| `--silver-db` | `warehouse/silver.duckdb` | Path to silver's DuckDB file to read from. |
+| `--out-root` | `warehouse` | Warehouse root; `gold.duckdb` is written here. |
+| `--mart` | none (build all) | One or more mart names to build — default builds **every** contract found in `config/gold_contracts/`. |
+
+**Example runs:**
 
 ```bash
-uv run gold-builder --mart gold_variant_gene_lookup_v1
+$ uv run gold-builder
+gold-builder: -> warehouse/gold.duckdb
+  gold_cohort_gene_burden_v1: 36 rows, 0 quarantined
+  gold_sample_clinical_profile_v1: 17 rows, 3 quarantined
+  gold_variant_gene_lookup_v1: 1032 rows, 57 quarantined
+
+# build just one mart — faster when iterating on a single contract
+$ uv run gold-builder --mart gold_variant_gene_lookup_v1
+gold-builder: -> warehouse/gold.duckdb
+  gold_variant_gene_lookup_v1: 1032 rows, 57 quarantined
 ```
+
+**Does re-running `uv run gold-builder` with no options risk conflicts or
+duplicate rows?** No — unlike silver, gold doesn't even have a multi-file
+auto-discovery step to reason about: it reads **one** database file
+(`--silver-db`, a single already-fully-rebuilt source of truth), and each
+mart's table is written with `CREATE OR REPLACE TABLE`. Re-running with no
+options simply rebuilds every mart fresh from whatever `silver.duckdb`
+currently contains — never accumulates, never double-counts.
 
 **The three marts:**
 

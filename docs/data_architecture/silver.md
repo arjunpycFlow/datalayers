@@ -2,18 +2,48 @@
 
 Reads bronze's `data` Parquet output, normalizes types and vocabulary, and writes a
 trust-layer schema (patients/samples/variant_calls/batches, plus a
-normalization-failure quarantine) to `warehouse/silver.duckdb`:
+normalization-failure quarantine) to `warehouse/silver.duckdb`.
+
+## Command and options
 
 ```bash
-uv run silver-builder
+uv run silver-builder [--bronze-data-root PATH] [--bronze-quarantine-root PATH]
+                       [--data-files FILE [FILE ...]] [--out-root PATH]
 ```
 
-By default it auto-discovers each batch's latest `data_*.parquet` under
-`warehouse/bronze/data/`. To rebuild from a specific bronze run instead:
+| Option | Default | Meaning |
+|---|---|---|
+| `--bronze-data-root` | `warehouse/bronze/data` | Root to **auto-discover** bronze data files under (ignored if `--data-files` is given). |
+| `--bronze-quarantine-root` | `warehouse/bronze/quarantine` | Root to auto-discover bronze quarantine files under — used only to report audit counts, doesn't affect what gets built. |
+| `--data-files` | none (auto-discover) | One or more explicit `data_*.parquet` paths — **overrides auto-discovery entirely**, useful to rebuild from one specific bronze run while troubleshooting. |
+| `--out-root` | `warehouse` | Warehouse root; `silver.duckdb` is written here. |
+
+**Example runs:**
 
 ```bash
-uv run silver-builder --data-files warehouse/bronze/data/batch_2026_01/data_<timestamp>.parquet [...]
+$ uv run silver-builder
+silver_builder: read 1090 rows from 2 bronze file(s) -> 20 samples, 1089 variant calls, 0 quarantined -> warehouse/silver.duckdb
+
+# rebuild from exactly one bronze run, bypassing auto-discovery
+$ uv run silver-builder --data-files warehouse/bronze/data/batch_2026_01/data_20260824T124546.parquet
+silver_builder: read 795 rows from 1 bronze file(s) -> 20 samples, 795 variant calls, 0 quarantined -> warehouse/silver.duckdb
 ```
+
+**Does re-running `uv run silver-builder` with no options risk conflicts or
+duplicate rows if `data-loader` has been run more than once?** No, for two
+independent reasons:
+
+1. **Auto-discovery picks one file per batch, not every file.**
+   `discover_bronze_data_files()` lists each `<batch_id>/` subdirectory under
+   `--bronze-data-root` and takes only the lexicographically-latest
+   `data_*.parquet` in it (the `YYYYMMDDTHHMMSS` timestamp format sorts
+   chronologically, so "latest name" = "latest run"). If `data-loader
+   batch_2026_01` has been run three times, silver reads only the newest of
+   those three files — the older two are ignored, not merged in.
+2. **Silver fully rebuilds, it never appends.** Every table is written with
+   `CREATE OR REPLACE TABLE` (see below) — running `silver-builder` twice in a
+   row with the same bronze inputs produces byte-identical output the second
+   time, not double the rows.
 
 **What it does that bronze didn't:**
 - Normalizes `tumor_purity` and all VCF-native allele-frequency-like fields
